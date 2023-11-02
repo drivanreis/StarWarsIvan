@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import App from '../App';
-import { PlanetContextProvider } from '../context/PlanetContext';
+import { ProvedorContextoPlanetas } from '../context/PlanetContext';
 import userEvent from '@testing-library/user-event';
 import { act } from 'react-dom/test-utils';
 import { testData } from './mock/testData';
@@ -13,9 +13,9 @@ global.fetch = vi.fn().mockResolvedValue({
 describe('Test the App component', () => {
   it('Test if the text search work', async () => {
     const screen = render(
-      <PlanetContextProvider>
+      <ProvedorContextoPlanetas>
         <App />
-      </PlanetContextProvider>
+      </ProvedorContextoPlanetas>
     );
 
     const user = userEvent.setup();
@@ -42,9 +42,9 @@ describe('Test the App component', () => {
 
   it('test if the filter options work', async () => {
     const screen = render(
-      <PlanetContextProvider>
+      <ProvedorContextoPlanetas>
         <App />
-      </PlanetContextProvider>
+      </ProvedorContextoPlanetas>
     );
 
     const user = userEvent.setup();
@@ -86,9 +86,9 @@ describe('Test the App component', () => {
 
   it('test the order by', async () => {
     const screen = render(
-      <PlanetContextProvider>
+      <ProvedorContextoPlanetas>
         <App />
-      </PlanetContextProvider>
+      </ProvedorContextoPlanetas>
     );
 
     const user = userEvent.setup();

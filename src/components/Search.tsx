@@ -1,10 +1,17 @@
-import { useCallback, useContext, useRef, useState } from 'react';
+// Eu sou Naviivan, um Jedi iniciante.
+// E vou tentar deixar o código o mais bem explicado possível,
+// com a maioria das variáveis em português.
+
+import React, { useCallback, useContext, useRef, useState } from 'react';
 import { PlanetContext } from '../context/PlanetContext';
-import { OperatorPhrase, PlanetTypeWithoutResidents } from '../types';
+import { FraseOperador, TipoDePlanetaSemResidentes } from '../types';
 
 function Search() {
+  // Variáveis de estado usando o hook useState
   const [numInputValue, setNumInputValue] = useState('0');
   const [checValue, setChecValue] = useState('');
+
+  // Destruturando funções e estados necessários do PlanetContext usando useContext
   const {
     filterPlanetsByText,
     filterPlanetsByKey,
@@ -15,21 +22,24 @@ function Search() {
     availableFilters,
   } = useContext(PlanetContext);
 
+  // Refs para elementos select
   const columnFilterRef = useRef<HTMLSelectElement>(null);
   const comparisonFilterRef = useRef<HTMLSelectElement>(null);
   const columnSortRef = useRef<HTMLSelectElement>(null);
 
-  const hChangeFilter = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  // Função de retorno de chamada para lidar com alterações de entrada de texto
+  const hTFiltraMuda = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     filterPlanetsByText(event.target.value);
   }, [filterPlanetsByText]);
 
-  const hClickFilter = useCallback(() => {
+  // Função de retorno de chamada para lidar com clique no botão de filtro
+  const handleFilterClick = useCallback(() => {
     const columnFilterEl = columnFilterRef.current;
     const comparisonFilterEl = comparisonFilterRef.current;
 
     if (columnFilterEl && comparisonFilterEl) {
-      const columnFilterValue = columnFilterEl.value as keyof PlanetTypeWithoutResidents;
-      const comparisonValue = comparisonFilterEl.value as OperatorPhrase;
+      const columnFilterValue = columnFilterEl.value as keyof TipoDePlanetaSemResidentes;
+      const comparisonValue = comparisonFilterEl.value as FraseOperador;
 
       if (columnFilterValue) {
         filterPlanetsByKey(columnFilterValue, comparisonValue, Number(numInputValue));
@@ -37,22 +47,23 @@ function Search() {
     }
   }, [filterPlanetsByKey, numInputValue]);
 
-  const hChangeCompareValue = useCallback((
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  // Função de retorno de chamada para alterar o valor de comparação
+  const hComparaValorMuda = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault();
     setNumInputValue(event.target.value);
   }, []);
 
-  const hChangeRadio = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+  // Função de retorno de chamada para lidar com alterações nos botões de rádio
+  const hRadioMuda = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     setChecValue(event.target.value);
   }, []);
 
-  const hSort = useCallback(() => {
+  // Função de retorno de chamada para lidar com clique no botão de classificação
+  const hOrdem = useCallback(() => {
     const columnSortEl = columnSortRef.current;
 
     sortList(
-      columnSortEl?.value as keyof PlanetTypeWithoutResidents,
+      columnSortEl?.value as keyof TipoDePlanetaSemResidentes,
       checValue.toLowerCase() as 'asc' | 'desc',
     );
   }, [checValue, sortList]);
@@ -60,21 +71,25 @@ function Search() {
   return (
     <div>
       <div>
+        {/* Entrada para filtrar por texto */}
         <input
           data-testid="name-filter"
           aria-label="name filter"
           type="text"
-          onChange={ hChangeFilter }
+          onChange={ hTFiltraMuda }
         />
       </div>
 
       <div>
+        {/* Elementos select para filtragem */}
         <select
           data-testid="column-filter"
           ref={ columnFilterRef }
           aria-label="column filter"
         >
-          {availableFilters.map((filter) => <option key={ filter }>{ filter }</option>)}
+          {availableFilters.map((filter) => (
+            <option key={ filter }>{filter}</option>
+          ))}
         </select>
 
         <select
@@ -93,12 +108,12 @@ function Search() {
           aria-label="value for filter"
           min={ 0 }
           value={ numInputValue }
-          onChange={ hChangeCompareValue }
+          onChange={ hComparaValorMuda }
         />
 
         <button
           data-testid="button-filter"
-          onClick={ hClickFilter }
+          onClick={ handleFilterClick }
         >
           Filtrar
         </button>
@@ -108,6 +123,7 @@ function Search() {
       </div>
 
       <div>
+        {/* Elemento select e botões de rádio para classificação */}
         <select data-testid="column-sort" ref={ columnSortRef } aria-label="column sort">
           <option>population</option>
           <option>orbital_period</option>
@@ -123,7 +139,7 @@ function Search() {
           id="asc"
           name="sort"
           checked={ checValue === 'asc' }
-          onChange={ hChangeRadio }
+          onChange={ hRadioMuda }
           data-testid="column-sort-input-asc"
         />
 
@@ -135,11 +151,11 @@ function Search() {
           name="sort"
           data-testid="column-sort-input-desc"
           checked={ checValue === 'desc' }
-          onChange={ hChangeRadio }
+          onChange={ hRadioMuda }
         />
 
         <button
-          onClick={ hSort }
+          onClick={ hOrdem }
           data-testid="column-sort-button"
         >
           Ordenar
@@ -147,15 +163,14 @@ function Search() {
       </div>
 
       <div>
-        {
-          filters.map((filter) => (
-            <div key={ filter.key } data-testid="filter">
-              <span>{filter.key}</span>
-              {' '}
-              <button onClick={ () => removeFilter(filter.key) }>X</button>
-            </div>
-          ))
-        }
+        {/* Exibindo filtros aplicados */}
+        {filters.map((filter) => (
+          <div key={ filter.key } data-testid="filter">
+            <span>{filter.key}</span>
+            {' '}
+            <button onClick={ () => removeFilter(filter.key) }>X</button>
+          </div>
+        ))}
       </div>
     </div>
   );

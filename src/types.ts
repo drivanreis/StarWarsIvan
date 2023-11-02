@@ -1,4 +1,8 @@
-export type PlanetType = {
+// Eu sou Naviivan, um Jedi iniciante.
+// E vou tentar deixar o código o mais bem explicado possível,
+// com a maioria das variáveis em português.
+
+export type TipoPlaneta = {
   name: string;
   rotation_period: string;
   orbital_period: string;
@@ -15,37 +19,37 @@ export type PlanetType = {
   url: string;
 };
 
-export type PlanetTypeWithoutResidents = Omit<PlanetType, 'residents'>;
+export type TipoDePlanetaSemResidentes = Omit<TipoPlaneta, 'residents'>;
 
-export type ApiResponse = {
+export type RespostaAPI = {
   count: number;
   next: string | null;
   previous: null | string;
-  results: PlanetType[];
+  results: TipoPlaneta[];
 };
 
-export type OperatorPhrase = 'maior que' | 'menor que' | 'igual a';
+export type FraseOperador = 'maior que' | 'menor que' | 'igual a';
 
-export type FilterType = {
-  key: keyof PlanetTypeWithoutResidents,
-  operator: OperatorPhrase,
+export type TipoDeFiltro = {
+  key: keyof TipoDePlanetaSemResidentes,
+  operator: FraseOperador,
   compareValue: number,
 };
 
-export type PlanetContextType = {
-  planets: PlanetTypeWithoutResidents[] | null;
+export type TipoContextoPlaneta = {
+  planets: TipoDePlanetaSemResidentes[] | null;
   isLoading: boolean;
   isError: boolean;
   errorMsg: string;
   availableFilters: string[];
-  filters: FilterType[];
+  filters: TipoDeFiltro[];
   filterPlanetsByText: (filterString: string) => void;
   filterPlanetsByKey: (
-    key: keyof PlanetTypeWithoutResidents,
-    operator: OperatorPhrase,
+    key: keyof TipoDePlanetaSemResidentes,
+    operator: FraseOperador,
     compareValue: number,
   ) => void;
   removeFilter: (key: string) => void;
   removeAllFilters: () => void;
-  sortList: (key: keyof PlanetTypeWithoutResidents, order: 'asc' | 'desc') => void;
+  sortList: (key: keyof TipoDePlanetaSemResidentes, order: 'asc' | 'desc') => void;
 };

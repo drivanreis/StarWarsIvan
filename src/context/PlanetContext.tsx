@@ -1,25 +1,31 @@
+// Eu sou Naviivan, um Jedi iniciante.
+// E vou tentar deixar o código o mais bem explicado possível,
+// com a maioria das variáveis em português.
+
 import { createContext, useEffect, useMemo, useState } from 'react';
 import {
-  ApiResponse,
-  FilterType,
-  OperatorPhrase,
-  PlanetContextType,
-  PlanetTypeWithoutResidents,
+  RespostaAPI,
+  TipoDeFiltro,
+  FraseOperador,
+  TipoContextoPlaneta,
+  TipoDePlanetaSemResidentes,
 } from '../types';
 import { useFetch } from '../hooks/useFetch';
 
-export const PlanetContext = createContext({} as PlanetContextType);
+export const PlanetContext = createContext({} as TipoContextoPlaneta);
 
-const removeResidentsMiddleware = (data: ApiResponse) => {
+// Remove os residentes de cada planeta
+const removeResidentsMiddleware = (data: RespostaAPI) => {
   return data.results.map((planet) => {
     const { residents, ...planetWithoutResidents } = planet;
     return planetWithoutResidents;
   });
 };
 
+// Função para classificar por chave e ordem
 const sortByKey = (
-  list: PlanetTypeWithoutResidents[],
-  key: keyof PlanetTypeWithoutResidents,
+  list: TipoDePlanetaSemResidentes[],
+  key: keyof TipoDePlanetaSemResidentes,
   order: 'asc' | 'desc',
 ) => {
   const sortedList = [...list];
@@ -51,24 +57,25 @@ const INITIAL_FILTERS = [
   'surface_water',
 ];
 
-export function PlanetContextProvider({ children }: { children: React.ReactNode }) {
+export function ProvedorContextoPlanetas({ children }: { children: React.ReactNode }) {
   const {
     data: planetsWithOutResidents,
     isLoading,
     isError,
     errorMsg,
-  } = useFetch<ApiResponse, PlanetTypeWithoutResidents[]>('https://swapi.dev/api/planets', removeResidentsMiddleware);
+  } = useFetch<RespostaAPI, TipoDePlanetaSemResidentes[]>('https://swapi.dev/api/planets', removeResidentsMiddleware);
 
-  const planets = planetsWithOutResidents as PlanetTypeWithoutResidents[] | null;
+  const planets = planetsWithOutResidents as TipoDePlanetaSemResidentes[] | null;
 
   const [filteredPlanets, setFilteredPlanets] = useState(planets);
-  const [filters, setFilters] = useState<FilterType[]>([]);
+  const [filters, setFilters] = useState<TipoDeFiltro[]>([]);
   const [availableFilters, setAvailableFilters] = useState<string[]>(INITIAL_FILTERS);
 
   useEffect(() => {
     setFilteredPlanets(planets);
   }, [planets]);
 
+  // Aplica os filtros aos planetas conforme as regras definidas
   useEffect(() => {
     let localFilteredPlanets = planets ?? [];
     const unavailableFilters: string[] = [];
@@ -106,6 +113,7 @@ export function PlanetContextProvider({ children }: { children: React.ReactNode 
     }));
   }, [filters, planets]);
 
+  // Cria e fornece o contexto com funções e estados necessários
   const contextValue = useMemo(() => {
     const filterPlanetsByText = (filterString: string) => {
       const tmpPlanets = planets ?? [];
@@ -116,8 +124,8 @@ export function PlanetContextProvider({ children }: { children: React.ReactNode 
     };
 
     const filterPlanetsByKey = (
-      key: keyof PlanetTypeWithoutResidents,
-      operator: OperatorPhrase,
+      key: keyof TipoDePlanetaSemResidentes,
+      operator: FraseOperador,
       compareValue: number,
     ) => {
       setFilters((currState) => [...currState, { key, operator, compareValue }]);
@@ -127,7 +135,7 @@ export function PlanetContextProvider({ children }: { children: React.ReactNode 
       (filter) => filter.key !== key,
     ));
 
-    const sortList = (key: keyof PlanetTypeWithoutResidents, order: 'asc' | 'desc') => {
+    const sortList = (key: keyof TipoDePlanetaSemResidentes, order: 'asc' | 'desc') => {
       setFilteredPlanets((currState) => sortByKey(currState ?? [], key, order));
     };
 

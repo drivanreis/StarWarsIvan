@@ -2,16 +2,16 @@ import { useContext } from 'react';
 import { vi } from 'vitest';
 import { testData } from './mock/testData';
 import { renderHook, waitFor } from '@testing-library/react';
-import { PlanetContext, PlanetContextProvider } from '../context/PlanetContext';
-import { PlanetTypeWithoutResidents } from '../types';
+import { PlanetContext, ProvedorContextoPlanetas } from '../context/PlanetContext';
+import { TipoDePlanetaSemResidentes } from '../types';
 
 global.fetch = vi.fn().mockResolvedValue({
   json: async () => (testData),
 });
 
 const sortByKey = (
-  list: PlanetTypeWithoutResidents[],
-  key: keyof PlanetTypeWithoutResidents,
+  list: TipoDePlanetaSemResidentes[],
+  key: keyof TipoDePlanetaSemResidentes,
   order: 'asc' | 'desc',
 ) => {
   const sortedList = [...list];
@@ -50,7 +50,7 @@ describe('Test the planet context', () => {
 
 
   it('Test if the key "residents" has been removed.', async () => {
-    const { result } = renderHook(() => useContext(PlanetContext), { wrapper: PlanetContextProvider });
+    const { result } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -63,7 +63,7 @@ describe('Test the planet context', () => {
   });
 
   it('Test if the function filterPlanetByText works correctly.', async () => {
-    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: PlanetContextProvider });
+    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -79,7 +79,7 @@ describe('Test the planet context', () => {
   });
 
   it('Test if the function sortList works correctly', async () => {
-    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: PlanetContextProvider });
+    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -108,7 +108,7 @@ describe('Test the planet context', () => {
   }); 
 
   it('Test if the planets are retained when an invalid filter is applied.', async () => {
-    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: PlanetContextProvider });
+    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
@@ -121,7 +121,7 @@ describe('Test the planet context', () => {
   });
 
   it('Test if the function filterPlanetsByKey works correctly', async () => {
-    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: PlanetContextProvider });
+    const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
       expect(result.current.isLoading).toBe(false);
