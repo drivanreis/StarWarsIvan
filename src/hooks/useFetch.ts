@@ -22,7 +22,8 @@ export function useFetch<T, S>(url: string, middleware?: (data: T) => S) {
       .catch((error) => {
         setError(true);
         if (error instanceof Error) setErrorMsg(error.message);
-        else setErrorMsg('Erro desconhecido');
+        // else setErrorMsg('Erro desconhecido');
+        else setErrorMsg('Unknown error');
       })
       .finally(() => setLoading(false));
   }, [middleware]);
