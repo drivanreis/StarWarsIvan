@@ -15,7 +15,7 @@ import { useFetch } from '../hooks/useFetch';
 export const PlanetContext = createContext({} as TipoContextoPlaneta);
 
 // Remove os residentes de cada planeta
-const removeResidentsMiddleware = (data: RespostaAPI) => {
+const removeResidetesDeCadaPlaneta = (data: RespostaAPI) => {
   return data.results.map((planet) => {
     const { residents, ...planetWithoutResidents } = planet;
     return planetWithoutResidents;
@@ -23,7 +23,7 @@ const removeResidentsMiddleware = (data: RespostaAPI) => {
 };
 
 // Função para classificar por chave e ordem
-const sortByKey = (
+const ordenarPorChave = (
   list: TipoDePlanetaSemResidentes[],
   key: keyof TipoDePlanetaSemResidentes,
   order: 'asc' | 'desc',
@@ -59,13 +59,13 @@ const INITIAL_FILTERS = [
 
 export function ProvedorContextoPlanetas({ children }: { children: React.ReactNode }) {
   const {
-    data: planetsWithOutResidents,
+    data: planetasSemResidentes,
     isLoading,
     isError,
     errorMsg,
-  } = useFetch<RespostaAPI, TipoDePlanetaSemResidentes[]>('https://swapi.dev/api/planets', removeResidentsMiddleware);
+  } = useFetch<RespostaAPI, TipoDePlanetaSemResidentes[]>('https://swapi.dev/api/planets', removeResidetesDeCadaPlaneta);
 
-  const planets = planetsWithOutResidents as TipoDePlanetaSemResidentes[] | null;
+  const planets = planetasSemResidentes as TipoDePlanetaSemResidentes[] | null;
 
   const [filteredPlanets, setFilteredPlanets] = useState(planets);
   const [filters, setFilters] = useState<TipoDeFiltro[]>([]);
@@ -136,7 +136,7 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
     ));
 
     const sortList = (key: keyof TipoDePlanetaSemResidentes, order: 'asc' | 'desc') => {
-      setFilteredPlanets((currState) => sortByKey(currState ?? [], key, order));
+      setFilteredPlanets((currState) => ordenarPorChave(currState ?? [], key, order));
     };
 
     const removeAllFilters = () => setFilters([]);
