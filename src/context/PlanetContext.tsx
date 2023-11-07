@@ -65,19 +65,19 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
     errorMsg,
   } = useFetch<RespostaAPI, TipoDePlanetaSemResidentes[]>('https://swapi.dev/api/planets', removeResidetesDeCadaPlaneta);
 
-  const planets = planetasSemResidentes as TipoDePlanetaSemResidentes[] | null;
+  const planetas = planetasSemResidentes as TipoDePlanetaSemResidentes[] | null;
 
-  const [filteredPlanets, setFilteredPlanets] = useState(planets);
+  const [filtraPlanetas, setfiltraPlanetas] = useState(planetas);
   const [filters, setFilters] = useState<TipoDeFiltro[]>([]);
   const [availableFilters, setAvailableFilters] = useState<string[]>(INITIAL_FILTERS);
 
   useEffect(() => {
-    setFilteredPlanets(planets);
-  }, [planets]);
+    setfiltraPlanetas(planetas);
+  }, [planetas]);
 
   // Aplica os filtros aos planetas conforme as regras definidas
   useEffect(() => {
-    let localFilteredPlanets = planets ?? [];
+    let localfiltraPlanetas = planetas ?? [];
     const unavailableFilters: string[] = [];
 
     filters.forEach(({ key, compareValue, operator }) => {
@@ -85,19 +85,19 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
 
       switch (operator) {
         case 'maior que': {
-          localFilteredPlanets = localFilteredPlanets.filter((planet) => {
+          localfiltraPlanetas = localfiltraPlanetas.filter((planet) => {
             return Number(planet[key]) > compareValue;
           });
           break;
         }
         case 'menor que': {
-          localFilteredPlanets = localFilteredPlanets.filter((planet) => {
+          localfiltraPlanetas = localfiltraPlanetas.filter((planet) => {
             return Number(planet[key]) < compareValue;
           });
           break;
         }
         case 'igual a': {
-          localFilteredPlanets = localFilteredPlanets.filter((planet) => {
+          localfiltraPlanetas = localfiltraPlanetas.filter((planet) => {
             return Number(planet[key]) === compareValue;
           });
           break;
@@ -107,18 +107,18 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
       }
     });
 
-    setFilteredPlanets(localFilteredPlanets);
+    setfiltraPlanetas(localfiltraPlanetas);
     setAvailableFilters(INITIAL_FILTERS.filter((filter) => {
       return !unavailableFilters.includes(filter);
     }));
-  }, [filters, planets]);
+  }, [filters, planetas]);
 
   // Cria e fornece o contexto com funções e estados necessários
   const contextValue = useMemo(() => {
     const filterPlanetsByText = (filterString: string) => {
-      const tmpPlanets = planets ?? [];
+      const tmpPlanets = planetas ?? [];
 
-      setFilteredPlanets(tmpPlanets.filter((planet) => planet.name.toLowerCase().includes(
+      setfiltraPlanetas(tmpPlanets.filter((planet) => planet.name.toLowerCase().includes(
         filterString.toLowerCase(),
       )));
     };
@@ -136,13 +136,13 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
     ));
 
     const sortList = (key: keyof TipoDePlanetaSemResidentes, order: 'asc' | 'desc') => {
-      setFilteredPlanets((currState) => ordenarPorChave(currState ?? [], key, order));
+      setfiltraPlanetas((currState) => ordenarPorChave(currState ?? [], key, order));
     };
 
     const removeAllFilters = () => setFilters([]);
 
     return {
-      planets: filteredPlanets,
+      planets: filtraPlanetas,
       isLoading,
       isError,
       errorMsg,
@@ -154,7 +154,13 @@ export function ProvedorContextoPlanetas({ children }: { children: React.ReactNo
       removeAllFilters,
       sortList,
     };
-  }, [isLoading, isError, errorMsg, filteredPlanets, planets, availableFilters, filters]);
+  }, [isLoading,
+    isError,
+    errorMsg,
+    filtraPlanetas,
+    planetas,
+    availableFilters,
+    filters]);
 
   return (
     <PlanetContext.Provider value={ contextValue }>
