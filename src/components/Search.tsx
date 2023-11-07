@@ -33,7 +33,7 @@ function Search() {
   }, [filterPlanetsByText]);
 
   // Função de retorno de chamada para lidar com clique no botão de filtro
-  const handleFilterClick = useCallback(() => {
+  const hFiltraClick = useCallback(() => {
     const columnFilterEl = columnFilterRef.current;
     const comparisonFilterEl = comparisonFilterRef.current;
 
@@ -113,7 +113,7 @@ function Search() {
 
         <button
           data-testid="button-filter"
-          onClick={ handleFilterClick }
+          onClick={ hFiltraClick }
         >
           Filtrar
         </button>

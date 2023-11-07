@@ -34,10 +34,15 @@ export function useFetch<T, S>(url: string, middleware?: (data: T) => S) {
   }, [makeRequest, url]);
 
   return {
-    data, // Dados da requisição
-    isLoading, // Indicação se está carregando
-    isError, // Indicação se houve erro
-    errorMsg, // Mensagem de erro
-    makeRequest, // Função para fazer requisição manualmente
+    // Dados da requisição
+    data,
+    // Indicação se está carregando
+    isLoading,
+    // Indicação se houve erro
+    isError,
+    // Mensagem de erro
+    errorMsg,
+    // Função para fazer requisição manualmente
+    makeRequest,
   };
 }

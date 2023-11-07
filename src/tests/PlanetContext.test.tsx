@@ -1,3 +1,8 @@
+// Eu sou Naviivan, um Jedi iniciante.
+// E vou tentar deixar o código o mais bem explicado possível,
+// com a maioria das variáveis em português.
+
+// Importação das bibliotecas e configurações necessárias para os testes
 import { useContext } from 'react';
 import { vi } from 'vitest';
 import { testData } from './mock/testData';
@@ -5,10 +10,12 @@ import { renderHook, waitFor } from '@testing-library/react';
 import { PlanetContext, ProvedorContextoPlanetas } from '../context/PlanetContext';
 import { TipoDePlanetaSemResidentes } from '../types';
 
+// Configuração global do fetch mockado para retornar dados de teste
 global.fetch = vi.fn().mockResolvedValue({
   json: async () => (testData),
 });
 
+// Função para ordenar a lista de planetas com base na chave e ordem especificadas
 const sortByKey = (
   list: TipoDePlanetaSemResidentes[],
   key: keyof TipoDePlanetaSemResidentes,
@@ -37,7 +44,7 @@ const sortByKey = (
   return sortedList;
 };
 
-
+// Função para remover a chave 'residents' dos planetas
 const removeResidents = () => {
   return testData.results.map((planet) => {
     const { residents, ...planetWithoutResidents } = planet;
@@ -45,11 +52,11 @@ const removeResidents = () => {
   });
 };
 
-describe('Test the planet context', () => {
+describe('Teste o contexto do planeta', () => {
   const planetsWithoutResidents = removeResidents();
 
-
-  it('Test if the key "residents" has been removed.', async () => {
+// Teste para verificar se a chave 'residents' foi removida
+  test('Teste se a chave “residentes” foi removida.', async () => {
     const { result } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
@@ -62,7 +69,8 @@ describe('Test the planet context', () => {
     expect(currHookReturn.planets).toEqual(planetsWithoutResidents);
   });
 
-  it('Test if the function filterPlanetByText works correctly.', async () => {
+  // Teste para verificar se a função filterPlanetByText funciona corretamente
+  test('Teste se a função filterPlanetByText funciona corretamente.', async () => {
     const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
@@ -77,8 +85,9 @@ describe('Test the planet context', () => {
       expect(result.current.planets[0]).toHaveProperty('name', 'Hoth');
     } else fail('Planets is not an array.');
   });
-
-  it('Test if the function sortList works correctly', async () => {
+  
+  // Teste para verificar se a função sortList funciona corretamente
+  test('Teste se a função sortList funciona corretamente', async () => {
     const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
@@ -107,7 +116,7 @@ describe('Test the planet context', () => {
     expect(result.current.planets).toEqual(planetsWithoutResidents);
   }); 
 
-  it('Test if the planets are retained when an invalid filter is applied.', async () => {
+  test('Teste se os planetas são retidos quando um filtro inválido é aplicado.', async () => {
     const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
@@ -120,7 +129,7 @@ describe('Test the planet context', () => {
     expect(result.current.planets).toEqual(planetsWithoutResidents);
   });
 
-  it('Test if the function filterPlanetsByKey works correctly', async () => {
+  test('Teste se a função filterPlanetsByKey funciona corretamente', async () => {
     const { result, rerender } = renderHook(() => useContext(PlanetContext), { wrapper: ProvedorContextoPlanetas });
     
     await waitFor(() => {
